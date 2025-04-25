@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {IoArrowBack} from "react-icons/io5";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -21,6 +21,15 @@ const Profile = () => {
     const [image,setImage] = useState(null);
     const [hovered, setHovered] = useState(false);
     const [selectedColor,setSelectedColor] = useState(0);
+    
+    useEffect(()=> {
+        if(userInfo.profileSetup){
+            setFirstName(userInfo.firstName);
+            setLastName(userInfo.lastName);
+            setSelectedColor(userInfo.color);
+        }
+    },[userInfo]);
+
 
     const validateProfile = () =>{
         if(!firstName){
