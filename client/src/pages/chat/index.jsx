@@ -11,12 +11,12 @@ const Chat = () => {
     const {userInfo, selectedChatType, isUploading,isDownloading,fileUploadProgress,fileDownloadProgress} = useAppStore();
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        if(!userInfo.profileSetup){
-            toast("Please set up profile to continue");
-            navigate("/profile");
-        }
-    },[userInfo,navigate]);
+    // useEffect(()=>{
+    //     if(!userInfo.profileSetup){
+    //         toast("Please set up profile to continue");
+    //         navigate("/profile");
+    //     }
+    // },[userInfo,navigate]);
     return (
         <div className="flex h-[100vh] text-white overflow-hidden">
             {
