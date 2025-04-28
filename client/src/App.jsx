@@ -6,11 +6,12 @@ import Profile from "./pages/profile";
 import { useAppStore } from "./store";
 import { apiClient } from "./lib/api-client";
 import { GET_USER_INFO } from "./utils/constants";
+import  Home from "./pages/home/index";
 
-
-
+let playerInfo;
 const PrivateRoute = ({children})=>{
   const {userInfo} = useAppStore();
+  playerInfo=userInfo;
   const isAuthenticated = !!userInfo;
   return isAuthenticated ? children : <Navigate to="/auth"/>;
 };
@@ -66,6 +67,9 @@ const App = () => {
         <Route path="/profile" element={<PrivateRoute>
           <Profile/>
         </PrivateRoute>}/>
+        <Route path="/home" element={<PrivateRoute>
+          <Home/>
+        </PrivateRoute>}/>
         <Route path="*" element={<Navigate to="/auth" />} />
       </Routes>
     </BrowserRouter>
@@ -73,3 +77,4 @@ const App = () => {
 }
 
 export default App
+export {playerInfo};

@@ -34,7 +34,7 @@ const server = app.listen(port,()=>{
 
 
 setupSocket(server);
+//setUpPlayerSocket(server);
 
-
-mongoose.connect(databaseURl).then(()=>console.log('DB COnnection Successful'))
+mongoose.connect(databaseURl).then(()=>console.log('DB Connection Successful'))
 .catch((err)=> console.log(err.message));

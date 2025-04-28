@@ -2,6 +2,14 @@ import {Server as SocketIoServer} from "socket.io";
 import Message from "./models/MessagesModel.js";
 import Channel from "./models/ChannelModel.js";
 
+const roomId='EYYfy';
+const state={
+    'EYYfy':{
+        players:[
+          
+        ]
+    }
+};
 const setupSocket = (server) => {
     const io = new SocketIoServer(server,{
         cors:{
@@ -84,6 +92,43 @@ const setupSocket = (server) => {
         socket.on("disconnect", ()=>disconnect(socket));
 
     });
+    io.of("/player").on("connection",(socket)=>{
+        socket.on("addMember",(data)=>{
+            if(data===undefined)return;
+            if(state[roomId].players.find((player)=>player.clientId===data)){
+                return;
+            }
+            console.log(data);
+            const clientId=data;
+            const {x,y,vel}=getPlayerInfo();
+            socket.join(roomId);
+            socket.emit("playerInfo",{clientId,x,y,vel});
+            socket.emit("allMembers",getPlayersData(roomId));//to sender
+    
+            state[roomId].players.push({
+                clientId:clientId,
+                x:x,
+                y:y,
+                vel:{x:0,y:0}
+            })
+            socket.to(roomId).emit("newMember",[clientId,x,y,vel]);// to all already present in the server except the sender
+            
+        })
+        socket.on("playerMovement",(data)=>{
+            console.log(data);
+            socket.to(roomId).emit("otherPlayerMovement",data);
+        })
+        function getPlayerInfo(){
+            const {x,y,vel}= {x:Math.floor(400*(Math.random())),y:Math.floor(200*(Math.random())),vel:{x:0,y:0}};
+            return {x,y,vel};
+        }
+        function getPlayersData(roomId){
+
+            if(state[roomId])return state[roomId].players;
+        }
+    })
 };
+
+
 
 export default setupSocket;

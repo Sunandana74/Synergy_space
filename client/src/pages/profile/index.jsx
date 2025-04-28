@@ -48,10 +48,12 @@ const Profile = () => {
             try{
                 const response = await apiClient.post(UPDATE_PROFILE_ROUTE, {firstName, lastName, color : selectedColor}, {withCredentials: true});
                 console.log(response);
+                navigate("/home");
                 if(response.status === 200 && response.data){
                     setUserInfo({...response.data});
                     toast.success("Profile updated successfully");
-                    navigate("/chat");
+                    console.log("its success");
+                    
                 }
             }catch(error){
                 console.log(error);
