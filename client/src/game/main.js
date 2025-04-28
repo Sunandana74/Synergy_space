@@ -1,10 +1,10 @@
 import { Boot } from './scenes/Boot';
 
 import { Office } from './scenes/Office';
-import { MainMenu } from './scenes/MainMenu';
+
 import Phaser from 'phaser';
 import { Preloader } from './scenes/Preloader';
-import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
+
 // Find out more information about the Game Config at:
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 const config = {
@@ -25,7 +25,7 @@ const config = {
         Boot,
         Preloader,
         Office,
-        MainMenu
+        
     ],
     
     

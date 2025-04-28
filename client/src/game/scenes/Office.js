@@ -1,12 +1,16 @@
 import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 import Player from './Player';
-import {io} from 'socket.io-client'; 
+import { useAppStore } from '@/store';
+import { io } from 'socket.io-client';
+import { playerInfo } from '@/App';
+
+
+
 export class Office extends Scene
 {
     cursors;
     player_instance;
-    #startGame;
     pos;
     oldPos={x:0,y:0};
     vel;
@@ -14,7 +18,7 @@ export class Office extends Scene
     otherPlayers={};
     layer1;
     layer2;
-    clientId;
+    playerInfo;
     constructor ()
     {
         super('Office');
@@ -25,16 +29,17 @@ export class Office extends Scene
 
         //loading spritesheet
         //load this assest from backend
-        this.load.atlas('male_character','../../../assets/anim/Adam_16x16.png',
-            '../../../assets/anim/sprites.json');
+        this.load.atlas('male_character','/src/assets/anim/Adam_16x16.png',
+            '/src/assets/anim/sprites.json');
          
     }
     initializeSocket(){
-        this.socket=io('http://localhost:9898',"player");
+        this.socket=io('http://localhost:8747/player');
     }
     create ()
     {
-        //starting websocket
+        this.playerInfo=playerInfo;
+        console.log(this.playerInfo.id);
         this.initializeSocket();
         this.setupSocketEvents();
 
@@ -91,8 +96,8 @@ export class Office extends Scene
 
         this.pos.x=this.player_instance.x;
         this.pos.y=this.player_instance.y;
-        console.log(this.player_instance.x,this.player_instance.y);
-        console.log(this.oldPos.x,this.oldPos.y);
+        // console.log(this.player_instance.x,this.player_instance.y);
+        // console.log(this.oldPos.x,this.oldPos.y);
         if(this.pos.x!=this.oldPos.x|| this.pos.y!=this.oldPos.y){
             this.socket.emit("playerMovement",{
                 clientId:this.clientId,
@@ -114,16 +119,16 @@ export class Office extends Scene
 
     }
     setupSocketEvents(){
-        this.socket.emit('addMember',this.clientId);
+        this.socket.emit('addMember',this.playerInfo.id);
         this.socket.on('playerInfo',(data)=>{
             const {clientId,x,y,vel}=data;
             this.clientId=clientId;
             //console.log(clientId);
-            this.#startGame=true;
+            
             this.pos={x:x,y:y};
             this.vel=vel;
             this.player_instance=new Player(this,this.pos.x,this.pos.y,'male_character','player1');
-            //console.log(this.player_instance);  
+            console.log(this.player_instance);  
             this.player_instance.setBounce(0.2);
             this.player_instance.setCollideWorldBounds(true);
             this.physics.add.collider(this.layer2,this.player_instance);

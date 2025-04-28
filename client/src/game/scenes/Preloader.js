@@ -30,11 +30,11 @@ export class Preloader extends Scene
     preload ()
     {
         //  Load the assets for the game - Replace with your own assets
-        this.load.image('tiles','../../../assets/Interiors_free_32x32.png');
-        this.load.image('flooring','../../../assets/Room_Builder_free_32x32.png');
-        this.load.tilemapTiledJSON('map','../../../assets/office-map.json');
+        this.load.image('tiles','/src/assets/Interiors_free_32x32.png');
+        this.load.image('flooring','/src/assets/Room_Builder_free_32x32.png');
+        this.load.tilemapTiledJSON('map','/src/assets/office-map.json');
     }
-
+    
     create ()
     {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.

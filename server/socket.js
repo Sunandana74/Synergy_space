@@ -3,7 +3,6 @@ import Message from "./models/MessagesModel.js";
 import Channel from "./models/ChannelModel.js";
 
 const roomId='EYYfy';
-let clientId=8989;
 const state={
     'EYYfy':{
         players:[
@@ -95,8 +94,12 @@ const setupSocket = (server) => {
     });
     io.of("/player").on("connection",(socket)=>{
         socket.on("addMember",(data)=>{
-            // console.log(socket.id);
             if(data===undefined)return;
+            if(state[roomId].players.find((player)=>player.clientId===data)){
+                return;
+            }
+            console.log(data);
+            const clientId=data;
             const {x,y,vel}=getPlayerInfo();
             socket.join(roomId);
             socket.emit("playerInfo",{clientId,x,y,vel});
@@ -109,26 +112,23 @@ const setupSocket = (server) => {
                 vel:{x:0,y:0}
             })
             socket.to(roomId).emit("newMember",[clientId,x,y,vel]);// to all already present in the server except the sender
-            clientId++; 
+            
         })
         socket.on("playerMovement",(data)=>{
             console.log(data);
             socket.to(roomId).emit("otherPlayerMovement",data);
         })
+        function getPlayerInfo(){
+            const {x,y,vel}= {x:Math.floor(400*(Math.random())),y:Math.floor(200*(Math.random())),vel:{x:0,y:0}};
+            return {x,y,vel};
+        }
+        function getPlayersData(roomId){
+
+            if(state[roomId])return state[roomId].players;
+        }
     })
 };
-function getPlayerInfo(){
-    const {x,y,vel}= {x:Math.floor(400*(Math.random())),y:Math.floor(200*(Math.random())),vel:{x:0,y:0}};
-    return {x,y,vel};
-}
-function getAllMembers(){
-    const room=io.sockets.clients(roomId);
-}
-function getPlayersData(roomId){
-    const room =io.sockets.adapter.rooms.get(roomId);
-    const players={};
-    if(room)return state[roomId].players;
-}
+
 
 
 export default setupSocket;
